@@ -10,6 +10,7 @@
 // 清除浏览器自带的内外边距
 html,
 body {
+  height: 100%;
   padding: 0;
   margin: 0;
 
@@ -37,6 +38,7 @@ body {
 }
 
 #app {
+  height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

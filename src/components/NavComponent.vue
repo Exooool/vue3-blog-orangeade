@@ -52,7 +52,7 @@ nav {
       padding: 10px 20px;
       &:hover {
         span {
-          transform: translateY(-10px);
+          // transform: translateY(-10px);
           color: #fbfcdb;
         }
       }
