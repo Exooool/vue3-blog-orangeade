@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/Home/Home.vue";
-import ArticleView from "../views/Article.vue";
 import Management from "../views/BackStageManagement/Management/Management.vue";
+import BackStageHome from "../views/BackStageManagement/Management/HomeView.vue";
+import Article from "../views/BackStageManagement/Management/Article.vue";
+import ArticleEdit from "../views/BackStageManagement/Management/ArticleEdit.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -10,14 +12,23 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
-    path: "/article",
-    name: "article",
-    component: ArticleView,
-  },
-  {
     path: "/backstage",
     name: "BackManagement",
     component: Management,
+    children: [
+      {
+        path: "home",
+        component: BackStageHome,
+      },
+      {
+        path: "article",
+        component: Article,
+      },
+      {
+        path: "articleEdit",
+        component: ArticleEdit,
+      },
+    ],
   },
   {
     path: "/about",
