@@ -66,14 +66,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.iconfont {
-  font-family: "iconfont" !important;
-  font-size: 16px;
-  font-style: normal;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-stroke-width: 0.1px;
-  -moz-osx-font-smoothing: grayscale;
-}
 .sidebar {
   position: relative;
   height: 100%;
@@ -84,8 +76,7 @@ export default {
   justify-content: center;
   align-items: center;
   background: #ffffff;
-  box-shadow: 4px 4px 10px rgba(0, 118, 135, 0.05),
-    6px 6px 40px rgba(0, 118, 135, 0.1);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
   border-radius: 20px 12px 12px 20px;
   // logo加名字的显示
   .header {

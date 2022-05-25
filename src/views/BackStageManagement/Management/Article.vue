@@ -61,7 +61,19 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+// 改变elemnt-plus的ui颜色
+.el-pagination.is-background .el-pager li:not(.is-disabled).is-active {
+  background-color: #ff8a68; //修改后的背景图颜色
+  color: #fff;
+}
+.el-pagination.is-background .el-pager li:not(.is-disabled):hover {
+  color: #ff8a68;
+}
+.el-pagination.is-background .btn-next:hover:not([disabled]),
+.el-pagination.is-background .btn-prev:hover:not([disabled]) {
+  color: #ff8a68;
+}
 .article {
   height: 600px;
   width: 100%;

@@ -17,6 +17,8 @@ body {
   // 自定义滚动条样式
   // 修改滚动条样式
   &::-webkit-scrollbar {
+    // x轴的高度
+    height: 6px;
     // 设置滚动条的宽度
     width: 6px;
   }

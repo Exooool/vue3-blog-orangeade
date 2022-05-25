@@ -4,7 +4,15 @@
     <div class="content">
       <div class="statusBar">
         <div class="nowRouteInfo">{{ route.path.replaceAll("/", "#") }}</div>
-        <div class="userInfo"></div>
+        <div class="basicInfo">
+          <span class="time">{{ data.time }}</span>
+          <span class="date">{{ data.date }}</span>
+          <div class="weather">
+            <i class="iconfont icon-humidity">{{ data.humidity }}%</i>
+            <i class="iconfont icon-temp">{{ data.temp }}℃</i>
+          </div>
+          <div class="userInfo"></div>
+        </div>
       </div>
       <div class="routerContent">
         <router-view></router-view>
@@ -16,8 +24,9 @@
 <script lang="ts">
 // 导入elmentui的css样式
 import "element-plus/dist/index.css";
-import { computed } from "vue";
+import { computed, onMounted, reactive } from "vue";
 import { useRoute } from "vue-router";
+import axios from "axios";
 import SideBar from "./components/SideBar.vue";
 
 export default {
@@ -26,8 +35,41 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const data = reactive({
+      date: "",
+      time: "",
+      humidity: 0,
+      temp: 0,
+    });
+    onMounted(() => {
+      // 获取当前时间
+      const date = new Date();
+      data.date = date.toLocaleDateString().replaceAll("/", " / ");
+      data.time = date.toLocaleTimeString().substring(0, 5);
+      // 实时更新时间
+      setInterval(() => {
+        data.time = new Date().toLocaleTimeString().substring(0, 5);
+      }, 1000);
+
+      // console.log(date.toLocaleTimeString());
+
+      // 获取当前天气
+      axios
+        .get(
+          "https://devapi.qweather.com/v7/weather/now?location=101010100&key=5afa8c60b2d44e72b020538cc9bec0fc"
+        )
+        .then((res) => {
+          console.log(res.data);
+          data.humidity = res.data.now.humidity;
+          data.temp = res.data.now.temp;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
     return {
       route,
+      data,
     };
   },
 };
@@ -35,7 +77,15 @@ export default {
 
 <style lang="scss">
 // 引入iconfont的图标样式
-@import url("//at.alicdn.com/t/font_3417707_ruyvrv4sgp.css");
+@import url("//at.alicdn.com/t/font_3417707_44qa5ax4z8f.css");
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.1px;
+  -moz-osx-font-smoothing: grayscale;
+}
 #management {
   height: 100%;
   width: 100%;
@@ -46,9 +96,7 @@ export default {
 
   .dataBox {
     background: #ffffff;
-    box-shadow: 4px 4px 10px rgba(0, 118, 135, 0.05),
-      -4px -4px 13px rgba(255, 255, 255, 0.5),
-      6px 6px 30px rgba(0, 118, 135, 0.1);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05);
     border-radius: 12px;
   }
 
@@ -67,6 +115,26 @@ export default {
 
       .nowRouteInfo {
       }
+      .basicInfo {
+        display: flex;
+        align-items: center;
+        .time {
+          margin-right: 17px;
+          font-weight: 500;
+          font-size: 16px;
+          line-height: 19px;
+        }
+        .date {
+          margin-right: 40px;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 16px;
+          color: rgba(0, 0, 0, 0.6);
+        }
+        .weather {
+          margin-right: 28px;
+        }
+      }
       .userInfo {
         height: 48px;
         width: 48px;
@@ -80,7 +148,7 @@ export default {
     // 修改滚动条样式
     &::-webkit-scrollbar {
       // 设置滚动条的宽度
-      width: 10px;
+      width: 8px;
     }
     // 滚动区域的样式
     &::-webkit-scrollbar-thumb {
