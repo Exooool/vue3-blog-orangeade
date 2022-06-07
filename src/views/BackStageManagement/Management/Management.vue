@@ -11,6 +11,10 @@
             <i class="iconfont icon-humidity">{{ data.humidity }}%</i>
             <i class="iconfont icon-temp">{{ data.temp }}℃</i>
           </div>
+
+          <div class="weatherTool">
+            <div id="he-plugin-standard" />
+          </div>
           <div class="userInfo"></div>
         </div>
       </div>
@@ -41,7 +45,24 @@ export default {
       humidity: 0,
       temp: 0,
     });
+    console.log(window);
     onMounted(() => {
+      (window as any).WIDGET = {
+        CONFIG: {
+          layout: "2",
+          width: 300,
+          height: 300,
+          background: "1",
+          dataColor: "FFFFFF",
+          key: "b043e41b856b4776b70a5e7f73f01877",
+        },
+      };
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src =
+        "https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0";
+      document.getElementsByTagName("head")[0].appendChild(script);
+
       // 获取当前时间
       const date = new Date();
       data.date = date.toLocaleDateString().replaceAll("/", " / ");
@@ -116,6 +137,7 @@ export default {
       .nowRouteInfo {
       }
       .basicInfo {
+        position: relative;
         display: flex;
         align-items: center;
         .time {
@@ -133,6 +155,21 @@ export default {
         }
         .weather {
           margin-right: 28px;
+          &:hover + .weatherTool {
+            opacity: 1;
+            z-index: 1000;
+          }
+        }
+        .weatherTool {
+          opacity: 0;
+          position: absolute;
+          transition: all 0.5s ease-in-out;
+          top: 50px;
+          z-index: 0;
+          &:hover {
+            z-index: 1000;
+            opacity: 1;
+          }
         }
       }
       .userInfo {

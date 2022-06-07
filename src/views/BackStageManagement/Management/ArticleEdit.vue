@@ -4,8 +4,8 @@
     <div class="dataBox articleTitleInfo">
       <span class="title">文章标题</span>
       <div class="inputBox">
-        <input type="text" />
-        <button class="usefulButton">发布文章</button>
+        <input type="text" v-model="data.title" />
+        <button class="usefulButton" @click="postArticle">发布文章</button>
       </div>
       <div class="linkAddress">固定链接： 192.1.68.1.1/article/1</div>
     </div>
@@ -28,7 +28,7 @@
       <!-- 分类和标签的选项 -->
       <div class="right dataBox">
         <div class="catalog">
-          <div>
+          <div class="titleRow">
             <span class="title">分类目录</span>
             <i class="iconfont icon-add"></i>
           </div>
@@ -38,16 +38,16 @@
                 'selectorItem',
                 data.catalogSelect == index ? 'selected' : '',
               ]"
-              v-for="(item, index) in 10"
+              v-for="(item, index) in data.catalogList"
               :key="index"
               @click="data.catalogSelect = index"
             >
-              123
+              {{ item["catalog_name"] }}
             </div>
           </div>
         </div>
         <div class="tag">
-          <div>
+          <div class="titleRow">
             <span class="title">标签目录</span>
             <i class="iconfont icon-add"></i>
           </div>
@@ -57,11 +57,11 @@
                 'selectorItem',
                 data.tagSelect == index ? 'selected' : '',
               ]"
-              v-for="(item, index) in 10"
+              v-for="(item, index) in data.tagList"
               :key="index"
               @click="data.tagSelect = index"
             >
-              123
+              {{ item["tag_name"] }}
             </div>
           </div>
         </div>
@@ -85,14 +85,20 @@ import {
   IDomEditor,
   IToolbarConfig,
 } from "@wangeditor/editor";
+import axios from "axios";
 
 export default defineComponent({
   setup() {
     const store = useStore();
     const text = ref("");
     const data = reactive({
+      title: "",
       catalogSelect: -1,
       tagSelect: -1,
+      catalogList: [],
+      tagList: [],
+      editorContent: "",
+      coverImgUrl: "",
     });
 
     onMounted(() => {
@@ -100,8 +106,10 @@ export default defineComponent({
       editorConfig.placeholder = "请输入内容";
       editorConfig.onChange = (editor: IDomEditor) => {
         // 当编辑器选区、内容变化时，即触发
-        console.log("content", editor.children);
+        // console.log("content", editor.children);
         console.log("html", editor.getHtml());
+        data.editorContent = editor.getHtml();
+        // console.log("text", editor.getText());
       };
 
       // 工具栏配置
@@ -120,12 +128,43 @@ export default defineComponent({
         config: toolbarConfig,
         mode: "default", // 或 'simple' 参考下文
       });
+
+      // 获取分类列表以及标签列表
+      axios.get("http://localhost:3000/article/getTagList").then((res) => {
+        console.log(res);
+        data.tagList = res.data.data;
+      });
+      axios.get("http://localhost:3000/article/getCatalogList").then((res) => {
+        console.log(res);
+        data.catalogList = res.data.data;
+      });
     });
+
+    // 发布文章
+    function postArticle() {
+      let articleData = {
+        title: data.title,
+        author: "admin",
+        tag: data.tagList[data.tagSelect]["tag_name"],
+        catalog: data.catalogList[data.catalogSelect]["catalog_name"],
+        content: data.editorContent,
+      };
+
+      axios
+        .post("http://localhost:3000/article/pushArticle", articleData)
+        .then((res) => {
+          console.log(res);
+        });
+      console.log(articleData);
+
+      return;
+    }
 
     return {
       store,
       text,
       data,
+      postArticle,
     };
   },
 });
@@ -183,6 +222,8 @@ export default defineComponent({
       input {
         height: 35px;
         margin-right: 20px;
+        padding: 0px 20px;
+        font-size: 16px;
         flex: 1;
         background: #ffffff;
         border: 0.5px solid rgba(255, 138, 104, 0.5);
@@ -242,6 +283,12 @@ export default defineComponent({
       flex: 1;
       .catalog {
         margin-right: 10px;
+      }
+      // 标题行
+      .titleRow {
+        display: flex;
+        padding: 10px;
+        justify-content: space-between;
       }
       .selector {
         height: 150px;

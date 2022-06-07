@@ -4,6 +4,7 @@ import Management from "../views/BackStageManagement/Management/Management.vue";
 import BackStageHome from "../views/BackStageManagement/Management/HomeView.vue";
 import Article from "../views/BackStageManagement/Management/Article.vue";
 import ArticleEdit from "../views/BackStageManagement/Management/ArticleEdit.vue";
+import ArticlePage from "../views/Home/Article/Article.vue";
 import Login from "../views/BackStageManagement/Login/LoginView.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -16,6 +17,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/article",
+    name: "article",
+    component: ArticlePage,
   },
   {
     path: "/backstage",

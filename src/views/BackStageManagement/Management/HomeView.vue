@@ -1,15 +1,18 @@
 <template>
   <div class="dataDisplay">
     <div class="leftArea">
-      <div class="articleBox dataBox"></div>
-      <div class="dataChart dataBox">
-        <div id="pieChart"></div>
-        <div id="lineChart"></div>
-      </div>
+      <div class="articleBox dataBox" id="userVisitChart"></div>
+      <!-- <div class="dataChart dataBox">
+        
+      </div> -->
     </div>
     <div class="rightArea">
-      <div class="otherInfo dataBox"></div>
-      <div class="otherInfo dataBox"></div>
+      <div class="otherInfo dataBox">
+        <div id="pieChart"></div>
+      </div>
+      <div class="otherInfo dataBox">
+        <div id="lineChart"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +91,88 @@ export default {
           },
         ],
       });
+
+      let userVisit = document.getElementById("userVisitChart") as HTMLElement;
+      userVisit.removeAttribute("_echarts_instance_");
+
+      let userVisitChart = echarts.init(
+        document.getElementById("userVisitChart") as HTMLElement
+      );
+
+      // 绘制时间折线图
+      let base = +new Date(1968, 9, 3);
+      let oneDay = 24 * 3600 * 1000;
+      let date = [];
+      let data = [Math.random() * 300];
+      for (let i = 1; i < 20000; i++) {
+        var now = new Date((base += oneDay));
+        date.push(
+          [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/")
+        );
+        data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+      }
+      userVisitChart.setOption({
+        tooltip: {
+          trigger: "axis",
+          position: function (pt: Array<number>) {
+            return [pt[0], "10%"];
+          },
+        },
+        title: {
+          left: "center",
+          text: "Large Area Chart",
+        },
+        toolbox: {
+          feature: {
+            dataZoom: {
+              yAxisIndex: "none",
+            },
+            restore: {},
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: date,
+        },
+        yAxis: {
+          type: "value",
+          boundaryGap: [0, "100%"],
+        },
+        dataZoom: [
+          {
+            type: "inside",
+            start: 0,
+            end: 10,
+          },
+          {
+            start: 0,
+            end: 10,
+          },
+        ],
+        series: [
+          {
+            name: "Fake Data",
+            type: "line",
+            symbol: "none",
+            sampling: "lttb",
+            areaStyle: {
+              // color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              //   {
+              //     offset: 0,
+              //     color: "rgb(255, 158, 68)",
+              //   },
+              //   {
+              //     offset: 1,
+              //     color: "rgb(255, 70, 131)",
+              //   },
+              // ]),
+            },
+            data: data,
+          },
+        ],
+      });
     });
   },
 };
@@ -138,6 +223,18 @@ export default {
     .otherInfo {
       height: 200px;
       margin-bottom: 16px;
+      #pieChart {
+        height: 100%;
+        flex: 1;
+        background-color: #fff9f8;
+        border-radius: 12px;
+      }
+      #lineChart {
+        height: 100%;
+        flex: 1;
+        background-color: #fff9f8;
+        border-radius: 12px;
+      }
     }
   }
 }
